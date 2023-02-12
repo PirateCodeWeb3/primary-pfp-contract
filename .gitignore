@@ -9,3 +9,11 @@ out/
 
 # Dotenv file
 .env
+
+./solhint.json
+node_modules/
+migrations/
+package.json
+package-lock.json
+
+.prettierignore
