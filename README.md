@@ -4,7 +4,7 @@
 - By binding your forever PFP to your address, it helps PFPer(not flipper) find each other easier.
 - While we can set avatar in ENS, but without ownership verification, you can set other people's PFP image, we need verify the ownership to make the PFP data onchain works.
 - PFP holder can have more than one PFPs in one address, but for the social networking better knowing your "face", it would be better choose a forever PFP by binding it.
-- This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record) ENS name, ForeverPunk](https://twitter.com/foreverpunksnft) and [delegate.cash](https://delegate.cash).
+- This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record) ENS name, [ForeverPunk](https://twitter.com/foreverpunksnft) and [delegate.cash](https://delegate.cash).
 
 ## What is ForeverPFP?
 - Register a PFP for an address like Primary ENS Name.
