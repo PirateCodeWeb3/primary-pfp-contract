@@ -11,12 +11,19 @@ interface IPFPBinding {
         uint256 tokenId;
     }
 
-    // @notice Emitted when a PFP unbound from the owner.
+    // @notice Emitted when a PFP bound from the owner.
     event PFPBound(
         address indexed to,
         address indexed contract_,
-        uint256 tokenId,
-        bool isDelegation
+        uint256 tokenId
+    );
+
+    // @notice Emitted when a PFP bound to a delegate.
+    event PFPBoundDelegate(
+        address indexed from,
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
     );
 
     // @notice Emitted when a PFP unbound from the owner.

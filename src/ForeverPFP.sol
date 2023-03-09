@@ -18,7 +18,7 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
 
     function bind(address contract_, uint256 tokenId) external {
         _bind(contract_, tokenId, msg.sender);
-        emit PFPBound(msg.sender, contract_, tokenId, false);
+        emit PFPBound(msg.sender, contract_, tokenId);
     }
 
     function bindDelegate(
@@ -27,7 +27,7 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
         address delegate
     ) external {
         _bind(contract_, tokenId, delegate);
-        emit PFPBound(delegate, contract_, tokenId, true);
+        emit PFPBoundDelegate(msg.sender, delegate, contract_, tokenId);
     }
 
     function _bind(address contract_, uint256 tokenId, address addr) internal {
