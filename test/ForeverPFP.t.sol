@@ -10,8 +10,14 @@ contract ForeverPFPTest is Test {
     event PFPBound(
         address indexed to,
         address indexed contract_,
-        uint256 tokenId,
-        bool isDelegation
+        uint256 tokenId
+    );
+
+    event PFPBoundDelegate(
+        address indexed from,
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
     );
 
     event PFPUnbound(
@@ -113,8 +119,8 @@ contract ForeverPFPTest is Test {
         testPFP.safeMint(msg.sender);
 
         vm.prank(msg.sender);
-        vm.expectEmit(true, true, true, true);
-        emit PFPBound(msg.sender, testPFPAddress, 0, false);
+        vm.expectEmit(true, true, false, true);
+        emit PFPBound(msg.sender, testPFPAddress, 0);
         foreverPFP.bind(testPFPAddress, 0);
     }
 
@@ -139,7 +145,7 @@ contract ForeverPFPTest is Test {
 
         vm.prank(msg.sender);
         vm.expectEmit(true, true, true, true);
-        emit PFPBound(delegate, testPFPAddress, 0, true);
+        emit PFPBoundDelegate(msg.sender, delegate, testPFPAddress, 0);
         foreverPFP.bindDelegate(testPFPAddress, 0, delegate);
     }
 
@@ -158,7 +164,7 @@ contract ForeverPFPTest is Test {
         emit PFPUnbound(msg.sender, testPFPAddress, 0);
 
         vm.expectEmit(true, true, true, true);
-        emit PFPBound(delegate, testPFPAddress, 0, true);
+        emit PFPBoundDelegate(msg.sender, delegate, testPFPAddress, 0);
         foreverPFP.bindDelegate(testPFPAddress, 0, delegate);
 
         vm.prank(msg.sender);
