@@ -3,8 +3,8 @@ pragma solidity ^0.8.17;
 
 import {IPFPBinding} from "./IPFPBinding.sol";
 import {ICommunityVerification} from "./ICommunityVerification.sol";
-import {IERC721} from "@openzeppelin/token/ERC721/IERC721.sol";
-import {Ownable} from "@openzeppelin/access/Ownable.sol";
+import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
 /**
  * @title
@@ -16,7 +16,7 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
     mapping(address => IPFPBinding.PFP) private pfps;
     mapping(address => bool) private verifications;
 
-    function bind(address contract_, uint256 tokenId) external {
+    function bind(address contract_, uint256 tokenId) external override {
         _bind(contract_, tokenId, msg.sender);
         emit PFPBound(msg.sender, contract_, tokenId);
     }
@@ -25,7 +25,7 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
         address contract_,
         uint256 tokenId,
         address delegate
-    ) external {
+    ) external override {
         _bind(contract_, tokenId, delegate);
         emit PFPBoundDelegate(msg.sender, delegate, contract_, tokenId);
     }
@@ -46,7 +46,7 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
         return;
     }
 
-    function unbind(address contract_, uint256 tokenId) external {
+    function unbind(address contract_, uint256 tokenId) external override {
         address owner = IERC721(contract_).ownerOf(tokenId);
         require(owner == msg.sender, "msg.sender is not the owner");
         bytes32 pfpHash = _pfpKey(contract_, tokenId);
@@ -59,7 +59,9 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
         delete pfps[boundAddress];
     }
 
-    function getPFP(address addr) external view returns (address, uint256) {
+    function getPFP(
+        address addr
+    ) external view override returns (address, uint256) {
         IPFPBinding.PFP memory pfp = pfps[addr];
         return (pfp.contract_, pfp.tokenId);
     }
@@ -67,23 +69,25 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
     function getBindingAddress(
         address contract_,
         uint256 tokenId
-    ) external view returns (address) {
+    ) external view override returns (address) {
         return bindingAddresses[_pfpKey(contract_, tokenId)];
     }
 
-    function addVerification(address contract_) external onlyOwner {
+    function addVerification(address contract_) external override onlyOwner {
         require(!verifications[contract_], "duplicated collection");
         verifications[contract_] = true;
         emit VerificationAdded(contract_);
     }
 
-    function removeVerification(address contract_) external onlyOwner {
+    function removeVerification(address contract_) external override onlyOwner {
         require(verifications[contract_], "collection not verified");
         verifications[contract_] = false;
         emit VerificationRemoved(contract_);
     }
 
-    function isVerified(address contract_) external view returns (bool) {
+    function isVerified(
+        address contract_
+    ) external view override returns (bool) {
         return verifications[contract_];
     }
 

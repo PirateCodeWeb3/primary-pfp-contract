@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.17;
 
-import "forge-std/console.sol";
-import {ERC721} from "@openzeppelin/token/ERC721/ERC721.sol";
-import {Counters} from "@openzeppelin/utils/Counters.sol";
-import {ITestPFP} from "./ITestPFP.sol";
+import {ERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
+import {Counters} from "../lib/openzeppelin-contracts/contracts/utils/Counters.sol";
 
-contract TestPFP is ERC721, ITestPFP {
+contract TestPFP is ERC721 {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
