@@ -36,3 +36,6 @@ You can try the testnet Chain with Ethereum (Goerli) [here](https://goerli.ether
 
 ### Thanks for the innovators
 This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/foreverpunksnft) and [delegate.cash](https://delegate.cash).
+
+### What would be future like by ForeverPFP
+![image](https://user-images.githubusercontent.com/110432670/229338327-d9fbc5e6-7951-41fa-846f-9a54e231b0e0.png)
