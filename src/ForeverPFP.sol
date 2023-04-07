@@ -37,13 +37,16 @@ contract ForeverPFP is Ownable, IPFPBinding, ICommunityVerification {
         address boundAddress = bindingAddresses[pfpHash];
         require(boundAddress != addr, "duplicated binding");
         bindingAddresses[pfpHash] = addr;
+        IPFPBinding.PFP memory pfp = pfps[addr];
+        if (pfp.contract_ != address(0)) {
+            delete bindingAddresses[_pfpKey(pfp.contract_, pfp.tokenId)];
+        }
         pfps[addr] = IPFPBinding.PFP(contract_, tokenId);
         if (boundAddress == address(0)) {
             return;
         }
         emit PFPUnbound(boundAddress, contract_, tokenId);
         delete pfps[boundAddress];
-        return;
     }
 
     function unbind(address contract_, uint256 tokenId) external override {
