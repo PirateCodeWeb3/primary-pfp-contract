@@ -149,6 +149,36 @@ contract ForeverPFPTest is Test {
         foreverPFP.bindDelegate(testPFPAddress, 0, delegate);
     }
 
+    function testBindOverrideByNewPFP() public {
+        testPFP.safeMint(msg.sender);
+
+        vm.prank(msg.sender);
+
+        vm.expectEmit(true, true, true, true);
+        emit PFPBound(msg.sender, testPFPAddress, 0);
+        foreverPFP.bind(testPFPAddress, 0);
+
+        (contract_, tokenId) = foreverPFP.getPFP(msg.sender);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 0);
+
+        testPFP.safeMint(msg.sender);
+        vm.prank(msg.sender);
+	
+        vm.expectEmit(true, true, true, true);
+        emit PFPBound(msg.sender, testPFPAddress, 1);
+        foreverPFP.bind(testPFPAddress, 1);
+
+        vm.prank(msg.sender);
+        (contract_, tokenId) = foreverPFP.getPFP(msg.sender);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 1);
+
+        vm.prank(msg.sender);
+        address addr = foreverPFP.getBindingAddress(contract_, tokenId);
+        assertEq(addr, msg.sender);
+    }    
+
     function testBindOverrideBySameOwner() public {
         testPFP.safeMint(msg.sender);
 
