@@ -32,7 +32,7 @@ Yes.
 Community can make the decision in the future whether we need ERC721 or ERC20 token to governance the PFP community verification.
 ### Can I use ForeverPFP right now?
 No, the first version of the code is just developed and opensouced by [PirateCode](https://twitter.com/PirateCode_ETH), hope more web3 mfs will join and build together, the code is not launched on the mainnet yet. Feel free to open an issue if you want to join & build.
-You can try the testnet Chain with Ethereum (Goerli) [here](https://goerli.etherscan.io/address/0x18fb660e593efba8bc7d8a2f8f83ae1cb8fa4026).
+You can try the testnet Chain with Ethereum (Goerli) [here](https://goerli.etherscan.io/address/0x03ac7dd6bf9a72d3522000b366f531652b10ad74).
 
 ### Thanks for the innovators
 This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/foreverpunksnft) and [delegate.cash](https://delegate.cash).
