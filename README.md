@@ -2,9 +2,9 @@
 Install [foundry](https://book.getfoundry.sh/)
 
 - build
-  ```
-  forge build
-  ```
+```
+forge build
+```
 
 - test
 ```
