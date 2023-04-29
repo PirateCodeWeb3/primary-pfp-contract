@@ -2,11 +2,11 @@
 pragma solidity ^0.8.17;
 
 /**
- * @title Same image url will confuse people, so verify a collection list of unique PFPs is important by the community.
+ * @title Same image url will confuse people, so verify a collection list of unique PFPs is important for public social networking.
  *
- * @dev this verfication can be maintained by the community by voting on snapshot with future developed ERC721/ERC20 tokens.
+ * @dev this verfication can be maintained by the community by voting on snapshot with future developed tokens.
  */
-interface ICommunityVerification {
+interface IPFPVerification {
     // @notice Emitted when a PFP collection is verified.
     event VerificationAdded(address indexed contract_);
 
@@ -16,17 +16,16 @@ interface ICommunityVerification {
     /**
      * @notice Owner only, multi-sig by community voted.
      *
-     * @param contract_ The collection address of the PFP
+     * @param contracts The collection addresses of the PFPs
      */
-    function addVerification(address contract_) external;
+    function addVerification(address[] calldata contracts) external;
 
     /**
      * @notice Owner only, multi-sig by community voted.
-     * Just in case one collection change metadata image to confuse people.
      *
-     * @param contract_ The collection address of the PFP
+     * @param contracts The collection addresses of the PFPs
      */
-    function removeVerification(address contract_) external;
+    function removeVerification(address[] calldata contracts) external;
 
     /**
      * @notice Returns whether a PFP collection is verified.
