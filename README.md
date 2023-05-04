@@ -22,10 +22,17 @@ forge create --rpc-url {rpc_url} \
     --private-key {private_key} \
     --etherscan-api-key {ethercan_api_key} \
     --verify \
-    src/ForeverPFP.sol:ForeverPFP
+    src/PrimaryPFP.sol:PrimaryPFP
+```
+```
+forge create --rpc-url {rpc_url} \
+    --private-key {private_key} \
+    --etherscan-api-key {ethercan_api_key} \
+    --verify \
+    src/PFPVerification.sol:PFPVerification
 ```
 
-You can try the testnet Chain with Ethereum (Goerli) [here](https://goerli.etherscan.io/address/0x03ac7dd6bf9a72d3522000b366f531652b10ad74).
+You can try the testnet for PrimaryPFP with Ethereum (Goerli) [here](https://goerli.etherscan.io/address/0x7840293893d1417F3EC8e402640C3D8275f0c934) and testnet for PFPVerification with Ethereum (Goerli) [here](https://goerli.etherscan.io/address/0x7a9c9c192c3F56F240f798c2D22D1b7cf2bc5bC1).
 
 # Thanks for the innovators
 This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/foreverpunksnft) and [delegate.cash](https://delegate.cash).
