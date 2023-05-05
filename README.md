@@ -16,7 +16,7 @@ forge test
 forge test --gas-report
 ```
 
-- deploy and verify in ethercan
+- deploy and verify in etherscan
 ```
 forge create --rpc-url {rpc_url} \
     --private-key {private_key} \
