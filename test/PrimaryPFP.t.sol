@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.17;
 
+import "forge-std/console.sol";
 import "forge-std/Test.sol";
 import "ds-test/test.sol";
 import "../src/PrimaryPFP.sol";
@@ -301,8 +302,6 @@ contract PrimaryPFPTest is Test {
     function testWithdraw() public {
         testPFP.safeMint(msg.sender);
         _setPrimaryPFP(0);
-
-        vm.prank(address(ppfp));
 
         ppfp.transferOwnership(delegate);
         assertEq(address(delegate).balance, 0 ether);
