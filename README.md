@@ -30,6 +30,15 @@ forge create --rpc-url {rpc_url} \
     --etherscan-api-key {ethercan_api_key} \
     --verify \
     src/PFPVerification.sol:PFPVerification
+	```
+
+- deploy and verify TestPFP in etherscan
+```
+forge create --rpc-url {rpc_url} \
+    --private-key {private_key} \
+    --etherscan-api-key {ethercan_api_key} \
+    --verify \
+    src/TestPFP.sol:TestPFP --constructor-args "$name" "$symbol"
 ```
 
 ## Goerli Testnet Contract Address

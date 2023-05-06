@@ -2,18 +2,50 @@
 pragma solidity ^0.8.17;
 
 import {ERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
-import {Counters} from "../lib/openzeppelin-contracts/contracts/utils/Counters.sol";
+import {ERC721Enumerable} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
-contract TestPFP is ERC721 {
-    using Counters for Counters.Counter;
+/**
+ * @title BlueChips
+ * @dev This contract is only for deployed on testnet for better testing.
+ */
+contract TestPFP is Ownable, ERC721Enumerable {
+    string public baseURI;
+    uint256 public collectionLimit;
+    mapping(address => uint256) public mintCounts;
 
-    Counters.Counter private _tokenIdCounter;
+    constructor(
+        string memory name,
+        string memory symbol
+    ) Ownable() ERC721(name, symbol) {
+        baseURI = "https://MintableERC721/";
+        collectionLimit = 10000;
+    }
 
-    constructor() ERC721("TestPFP", "Test PFP") {}
+    /**
+     * @dev Function to mint tokens
+     * @param tokenId The id of tokens to mint.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mint(uint256 tokenId) external returns (bool) {
+        require(tokenId < collectionLimit, "exceed collection limit");
 
-    function safeMint(address to) public {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
+        mintCounts[_msgSender()] += 1;
+        require(mintCounts[_msgSender()] <= 10, "exceed mint limit");
+
+        _mint(_msgSender(), tokenId);
+        return true;
+    }
+
+    function setBaseURI(string memory baseURI_) external onlyOwner {
+        baseURI = baseURI_;
+    }
+
+    function setCollectionLimit(uint256 collectionLimit_) external onlyOwner {
+        collectionLimit = collectionLimit_;
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
     }
 }
