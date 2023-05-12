@@ -32,15 +32,17 @@ forge create --rpc-url {rpc_url} \
     src/PFPVerification.sol:PFPVerification
 ```
 
-- Goerli Testnet Contract Address
-| Name  | address |
-| ------------- |:-------------:|
-| PrimaryPFP      | [0xD2068Fea1e1123a68007b836178f03dEf5aD7717](https://goerli.etherscan.io/address/0xD2068Fea1e1123a68007b836178f03dEf5aD7717)     |
-| PFPVerification      |    [0x7a9c9c192c3F56F240f798c2D22D1b7cf2bc5bC1](https://goerli.etherscan.io/address/0x7a9c9c192c3F56F240f798c2D22D1b7cf2bc5bC1)  |
+## Goerli Testnet Contract Address
 
-- Goerli Testnet PFP Collection Address
-| Name  | address |
-| ------------- |:-------------:|
+| Name | address |
+| --- | --- |
+| PrimaryPFP | [0xD2068Fea1e1123a68007b836178f03dEf5aD7717](https://goerli.etherscan.io/address/0xD2068Fea1e1123a68007b836178f03dEf5aD7717) |
+| PFPVerification | [0x7a9c9c192c3F56F240f798c2D22D1b7cf2bc5bC1](https://goerli.etherscan.io/address/0x7a9c9c192c3F56F240f798c2D22D1b7cf2bc5bC1) |
+
+## Goerli Testnet PFP Collection Address
+
+| Name | address |
+| --- | --- |
 | wrapped punks   | [0x29674De3A40432f1d709C40f93d4d707063e73CE](https://goerli.etherscan.io/address/0x29674De3A40432f1d709C40f93d4d707063e73CE) |
 | V1 CryptoPunks |[0x7053c224bF94cdbad53F80bF9029c1ba7334D774](https://goerli.etherscan.io/address/0x7053c224bF94cdbad53F80bF9029c1ba7334D774)     |
 | BAYC      | [0x5f1b78a908a05835b53bbc6cdffc2dfaea10d42d](https://goerli.etherscan.io/address/0x5f1b78a908a05835b53bbc6cdffc2dfaea10d42d)      |
