@@ -1,4 +1,4 @@
-## Why PrimaryPFP?
+## Why primary PFP?
 
 PFP holder can have more than one PFPs in one address, but for the social networking better knowing your "face", it would be better choose a primary PFP and set it onchain.
 
@@ -7,10 +7,6 @@ We have getName(address) function provided by ENS now, we will have getPFP(addre
 ## Why not ENS avatar?
 
 We can [set avatar in ENS](https://medium.com/@brantly.eth/step-by-step-guide-to-setting-an-nft-as-your-ens-profile-avatar-3562d39567fc), but without ownership verification, you can set other people's PFP image, PrimaryPFP verify the ownership to make accurate onchain data.
-
-## How to find PFP community members easier by this project?
-
-Bind your PFP to your ENS, set twitter account in your ENS, a website will be developed to show all the binding PFPs and their twitter accounts to connect the web3 people by onchain data.
 
 ## Any fee set/remove my primary PFP?
 
@@ -33,6 +29,6 @@ The best practice would be set your ENS primary name to a hotwallet, and set you
 
 Remove it by owner or set the same PFP to a new address is the way to remove delegate.
 
-## What if I sold my Primary PFP?
+## What if I sold my primary PFP?
 
-The primary data is still in the contract if the new owner don't override it.
+The primary PFP data is still in the contract if the new owner don't override it.
