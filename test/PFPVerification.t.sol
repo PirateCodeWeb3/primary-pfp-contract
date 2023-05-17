@@ -18,7 +18,7 @@ contract PFPVerificationTest is Test {
 
     function setUp() public {
         pv = new PFPVerification();
-        testPFP = new TestPFP();
+        testPFP = new TestPFP("Test PFP", "TPFP");
         testPFPAddress = address(testPFP);
         pfpAddresses.push(testPFPAddress);
     }
