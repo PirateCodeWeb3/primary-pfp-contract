@@ -1,3 +1,6 @@
+# FAQ of Primary PFP
+See FAQ [here](https://github.com/ForeverPFP/primary-pfp-contract/blob/main/faq.md)
+
 # How to run the project
 Install [foundry](https://book.getfoundry.sh/)
 
