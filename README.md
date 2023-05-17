@@ -30,7 +30,7 @@ forge create --rpc-url {rpc_url} \
     --etherscan-api-key {ethercan_api_key} \
     --verify \
     src/PFPVerification.sol:PFPVerification
-	```
+```
 
 - deploy and verify TestPFP in etherscan
 ```
