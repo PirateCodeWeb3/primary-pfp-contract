@@ -40,7 +40,7 @@ interface IPrimaryPFP {
      * @param contract_ The collection address of the PFP
      * @param tokenId The tokenId of the PFP
      */
-    function setPrimary(address contract_, uint256 tokenId) external payable;
+    function setPrimary(address contract_, uint256 tokenId) external;
 
     /**
      * @notice Set primary PFP for a delegate address.
@@ -54,7 +54,7 @@ interface IPrimaryPFP {
         address contract_,
         uint256 tokenId,
         address delegate
-    ) external payable;
+    ) external;
 
     /**
      * @notice Remove the primary PFP setting.
@@ -84,9 +84,4 @@ interface IPrimaryPFP {
         address contract_,
         uint256 tokenId
     ) external view returns (address);
-
-    /**
-     * @notice withdraw the money to community DAO Treasury.
-     */
-    function withdraw() external;
 }
