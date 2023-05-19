@@ -28,3 +28,9 @@ Remove it by owner or set the same PFP to a new address is the way to remove del
 ## What if I sold my primary PFP?
 
 The primary PFP data is still in the contract if the new owner don't override it.
+
+## Any auditing on primary PFP?
+
+The primary PFP contract neither save PFPs nor asking approvals for PFPs, so it's not audited.
+
+User just need one transaction to register primary data onchain like delegate.cash.
