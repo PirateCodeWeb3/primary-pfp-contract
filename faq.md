@@ -8,13 +8,9 @@ We have getName(address) function provided by ENS now, we will have getPFP(addre
 
 We can [set avatar in ENS](https://medium.com/@brantly.eth/step-by-step-guide-to-setting-an-nft-as-your-ens-profile-avatar-3562d39567fc), but without ownership verification, you can set other people's PFP image, PrimaryPFP verify the ownership to make accurate onchain data.
 
-## Any fee set/remove my primary PFP?
+## Any fee set/remove primary PFP?
 
-There is no fee for removing. The fee for set is 0.01 ETH, discussion is [here](https://github.com/orgs/PrimaryPFP/discussions/14).
-
-## How the team are going to use the money been paid?
-
-The money goes to the DAO Treasury maintained by a group of people for project runing like ENS.
+No.
 
 ## Can I set my primary PFP to another address?
 
