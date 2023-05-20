@@ -32,7 +32,7 @@ forge create --rpc-url {rpc_url} \
 
 | Name | address |
 | --- | --- |
-| PrimaryPFP | [0xD2068Fea1e1123a68007b836178f03dEf5aD7717](https://goerli.etherscan.io/address/0xD2068Fea1e1123a68007b836178f03dEf5aD7717) |
+| PrimaryPFP | [0xB40D2F329178c452A56AcC06c26c3b5B2EeEb3Df](https://goerli.etherscan.io/address/0xB40D2F329178c452A56AcC06c26c3b5B2EeEb3Df) |
 
 # Thanks for the innovators
 This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/foreverpunksnft) and [delegate.cash](https://delegate.cash).
