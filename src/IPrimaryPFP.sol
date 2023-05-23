@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 /**
  * @title Set primary PFP for an address like primary ENS.
- * @dev Only owner of the PFP can set or remove the data onchain.
+ * @dev owner or delegated/warmed address can set primary PFP, only owner can remove the primary PFP.
  */
 interface IPrimaryPFP {
     struct PFP {
@@ -41,6 +41,27 @@ interface IPrimaryPFP {
      * @param tokenId The tokenId of the PFP
      */
     function setPrimary(address contract_, uint256 tokenId) external;
+
+    /**
+     * @notice Set primary PFP for an address from a delegated address from delegate.cash.
+     * Only the delegated address from delegate cash can set it.
+     *
+     * @param contract_ The collection address of the PFP
+     * @param tokenId The tokenId of the PFP
+     */
+    function setPrimaryByDelegateCash(
+        address contract_,
+        uint256 tokenId
+    ) external;
+
+    /**
+     * @notice Set primary PFP for an address from a warmed address from warm.xyz.
+     * Only the warmed address from warm.xyz can set it.
+     *
+     * @param contract_ The collection address of the PFP
+     * @param tokenId The tokenId of the PFP
+     */
+    function setPrimaryByWarmXyz(address contract_, uint256 tokenId) external;
 
     /**
      * @notice Set primary PFP for a delegate address.

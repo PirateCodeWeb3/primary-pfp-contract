@@ -6,6 +6,8 @@ import "forge-std/Test.sol";
 import "ds-test/test.sol";
 import "../src/PrimaryPFP.sol";
 import "../src/TestPFP.sol";
+import "../lib/delegate-cash/DelegationRegistry.sol";
+import "../lib/warm-xyz/HotWalletProxy.sol";
 
 contract PrimaryPFPTest is Test {
     event PrimarySet(
@@ -31,6 +33,8 @@ contract PrimaryPFPTest is Test {
 
     event VerificationRemoved(address indexed contract_);
 
+    DelegationRegistry dc;
+    HotWalletProxy warm;
     PrimaryPFP public ppfp;
     TestPFP public testPFP;
     address public testPFPAddress;
@@ -39,7 +43,9 @@ contract PrimaryPFPTest is Test {
     uint256 tokenId;
 
     function setUp() public {
-        ppfp = new PrimaryPFP();
+        dc = new DelegationRegistry();
+        warm = new HotWalletProxy();
+        ppfp = new PrimaryPFP(address(dc), address(warm));
         testPFP = new TestPFP("Test PFP", "TPFP");
         testPFPAddress = address(testPFP);
         delegate = makeAddr("delegate");
@@ -95,11 +101,98 @@ contract PrimaryPFPTest is Test {
         assertEq(addr, msg.sender);
     }
 
-    function testSetEvent() public {
+    function testEventForSetPrimary() public {
         vm.prank(msg.sender);
         vm.expectEmit(true, true, false, true);
         emit PrimarySet(msg.sender, testPFPAddress, 0);
         ppfp.setPrimary(testPFPAddress, 0);
+    }
+
+    function testSetPrimaryPFPByDelegateCashNotDelegated() public {
+        vm.expectRevert("msg.sender is not delegated by delegate.cash");
+        ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
+    }
+
+    function testSetPrimaryPFPByDelegateCashToken() public {
+        vm.prank(msg.sender);
+
+        dc.delegateForToken(delegate, testPFPAddress, 0, true);
+        assertTrue(
+            dc.checkDelegateForToken(delegate, msg.sender, testPFPAddress, 0)
+        );
+
+        vm.prank(delegate);
+        ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
+
+        (contract_, tokenId) = ppfp.getPrimary(delegate);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 0);
+
+        vm.prank(msg.sender);
+        address addr = ppfp.getPrimaryAddress(contract_, tokenId);
+        assertEq(addr, delegate);
+    }
+
+    function testSetPrimaryPFPByDelegateCashContract() public {
+        vm.prank(msg.sender);
+
+        dc.delegateForContract(delegate, testPFPAddress, true);
+        assertTrue(
+            dc.checkDelegateForContract(delegate, msg.sender, testPFPAddress)
+        );
+
+        vm.prank(delegate);
+        ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
+
+        (contract_, tokenId) = ppfp.getPrimary(delegate);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 0);
+
+        vm.prank(msg.sender);
+        address addr = ppfp.getPrimaryAddress(contract_, tokenId);
+        assertEq(addr, delegate);
+    }
+
+    function testSetPrimaryPFPByDelegateCashAll() public {
+        vm.prank(msg.sender);
+
+        dc.delegateForAll(delegate, true);
+        assertTrue(dc.checkDelegateForAll(delegate, msg.sender));
+
+        vm.prank(delegate);
+        ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
+
+        (contract_, tokenId) = ppfp.getPrimary(delegate);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 0);
+
+        vm.prank(msg.sender);
+        address addr = ppfp.getPrimaryAddress(contract_, tokenId);
+        assertEq(addr, delegate);
+    }
+
+    function testSetPrimaryPFPByWarmXyzNotWarmed() public {
+        vm.expectRevert("msg.sender is not warmed by warm.xyz");
+        ppfp.setPrimaryByWarmXyz(testPFPAddress, 0);
+    }
+
+    function testSetPrimaryPFPByWarmXyzSuccess() public {
+        vm.prank(msg.sender);
+
+        warm.setHotWallet(delegate, block.timestamp * 2, true);
+        assertEq(warm.getHotWallet(msg.sender), delegate);
+
+        vm.prank(delegate);
+        ppfp.setPrimaryByWarmXyz(testPFPAddress, 0);
+
+        vm.prank(msg.sender);
+        (contract_, tokenId) = ppfp.getPrimary(delegate);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 0);
+
+        vm.prank(msg.sender);
+        address addr = ppfp.getPrimaryAddress(contract_, tokenId);
+        assertEq(addr, delegate);
     }
 
     function testSetDelegate() public {
@@ -115,7 +208,7 @@ contract PrimaryPFPTest is Test {
         assertEq(addr, delegate);
     }
 
-    function testSetDelegateEvent() public {
+    function testEventForSetDelegate() public {
         vm.prank(msg.sender);
         vm.expectEmit(true, true, true, true);
         emit PrimaryDelegateSet(msg.sender, delegate, testPFPAddress, 0);
