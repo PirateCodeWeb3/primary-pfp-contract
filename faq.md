@@ -16,9 +16,14 @@ No.
 
 Yes, you can set your PFP to any address anytime by your token owner address.
 
+## I have used delegate.cash/warm.xyz to seperate my cold & hot wallet, is that primary PFP support it?
+
+Yes, the contract support delegate.cash and warm.xyz.
+
 ## What is set primary for delegate?
 
 It worked the same way like delegate.cash, you can set your primary PFP to an delegate address which can be a hotwallet to avoid scammed by signing.
+
 The best practice would be set your ENS primary name to a hotwallet, and set your primary PFP delegate to the hotwallet from your PFP vault.
 
 ## How can I remove the delegate?
@@ -34,3 +39,5 @@ The primary PFP data is still in the contract if the new owner don't override it
 The primary PFP contract neither save PFPs nor asking approvals for PFPs, so it's not audited.
 
 User just need one transaction to register primary data onchain like delegate.cash.
+
+You can use delegate.cash or warm.xyz wallet to set primary PFP, which risk 0 for your NFT.

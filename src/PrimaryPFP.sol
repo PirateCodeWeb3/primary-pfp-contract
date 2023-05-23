@@ -8,12 +8,76 @@ import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC
  * @title Set primary PFP by binding a PFP to an address like primary ENS.
  *
  */
+interface WarmXyzInterface {
+    function getHotWallet(address coldWallet) external view returns (address);
+}
+
+interface DelegateCashInterface {
+    function checkDelegateForAll(
+        address delegate,
+        address vault
+    ) external view returns (bool);
+
+    function checkDelegateForContract(
+        address delegate,
+        address vault,
+        address contract_
+    ) external view returns (bool);
+
+    function checkDelegateForToken(
+        address delegate,
+        address vault,
+        address contract_,
+        uint256 tokenId
+    ) external view returns (bool);
+
+    function delegateForToken(
+        address delegate,
+        address contract_,
+        uint256 tokenId,
+        bool value
+    ) external;
+}
+
 contract PrimaryPFP is IPrimaryPFP {
     mapping(bytes32 => address) private bindingAddresses;
     mapping(address => IPrimaryPFP.PFP) private primaryPFPs;
     mapping(address => bool) private verifications;
+    DelegateCashInterface dci;
+    WarmXyzInterface wxi;
+
+    constructor(address dciAddress, address wxiAddress) {
+        dci = DelegateCashInterface(dciAddress);
+        wxi = WarmXyzInterface(wxiAddress);
+    }
 
     function setPrimary(address contract_, uint256 tokenId) external override {
+        address tokenOwner = IERC721(contract_).ownerOf(tokenId);
+        require(tokenOwner == msg.sender, "msg.sender is not the owner");
+        _set(contract_, tokenId, msg.sender);
+        emit PrimarySet(msg.sender, contract_, tokenId);
+    }
+
+    function setPrimaryByDelegateCash(
+        address contract_,
+        uint256 tokenId
+    ) external override {
+        address tokenOwner = IERC721(contract_).ownerOf(tokenId);
+        require(
+            dci.checkDelegateForToken(
+                msg.sender,
+                tokenOwner,
+                contract_,
+                tokenId
+            ) ||
+                dci.checkDelegateForContract(
+                    msg.sender,
+                    tokenOwner,
+                    contract_
+                ) ||
+                dci.checkDelegateForAll(msg.sender, tokenOwner),
+            "msg.sender is not delegated by delegate.cash"
+        );
         _set(contract_, tokenId, msg.sender);
         emit PrimarySet(msg.sender, contract_, tokenId);
     }
@@ -23,13 +87,28 @@ contract PrimaryPFP is IPrimaryPFP {
         uint256 tokenId,
         address delegate
     ) external override {
+        require(
+            IERC721(contract_).ownerOf(tokenId) == msg.sender,
+            "msg.sender is not the owner"
+        );
         _set(contract_, tokenId, delegate);
         emit PrimaryDelegateSet(msg.sender, delegate, contract_, tokenId);
     }
 
+    function setPrimaryByWarmXyz(
+        address contract_,
+        uint256 tokenId
+    ) external override {
+        address tokenOwner = IERC721(contract_).ownerOf(tokenId);
+        require(
+            wxi.getHotWallet(tokenOwner) == msg.sender,
+            "msg.sender is not warmed by warm.xyz"
+        );
+        _set(contract_, tokenId, msg.sender);
+        emit PrimarySet(msg.sender, contract_, tokenId);
+    }
+
     function _set(address contract_, uint256 tokenId, address addr) internal {
-        address owner = IERC721(contract_).ownerOf(tokenId);
-        require(owner == msg.sender, "msg.sender is not the owner");
         bytes32 pfpHash = _pfpKey(contract_, tokenId);
         address boundAddress = bindingAddresses[pfpHash];
         require(boundAddress != addr, "duplicated set");
