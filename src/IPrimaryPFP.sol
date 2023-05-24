@@ -18,14 +18,6 @@ interface IPrimaryPFP {
         uint256 tokenId
     );
 
-    // @notice Emitted when a primary PFP set for a delegate.
-    event PrimaryDelegateSet(
-        address indexed from,
-        address indexed to,
-        address indexed contract_,
-        uint256 tokenId
-    );
-
     // @notice Emitted when a primary PFP removed.
     event PrimaryRemoved(
         address indexed from,
@@ -62,20 +54,6 @@ interface IPrimaryPFP {
      * @param tokenId The tokenId of the PFP
      */
     function setPrimaryByWarmXyz(address contract_, uint256 tokenId) external;
-
-    /**
-     * @notice Set primary PFP for a delegate address.
-     * Only the PFP owner can set it, works like delegate cash for hotwallet.
-     *
-     * @param contract_ The collection address of the PFP
-     * @param tokenId The tokenId of the PFP
-     * @param delegate The delegate/hotwallet address owner want to delegate to
-     */
-    function setPrimaryForDelegate(
-        address contract_,
-        uint256 tokenId,
-        address delegate
-    ) external;
 
     /**
      * @notice Remove the primary PFP setting.

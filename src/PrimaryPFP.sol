@@ -94,19 +94,6 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         emit PrimarySet(msg.sender, contract_, tokenId);
     }
 
-    function setPrimaryForDelegate(
-        address contract_,
-        uint256 tokenId,
-        address delegate
-    ) external override {
-        require(
-            IERC721(contract_).ownerOf(tokenId) == msg.sender,
-            "msg.sender is not the owner"
-        );
-        _set(contract_, tokenId, delegate);
-        emit PrimaryDelegateSet(msg.sender, delegate, contract_, tokenId);
-    }
-
     function setPrimaryByWarmXyz(
         address contract_,
         uint256 tokenId
@@ -127,6 +114,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         bindingAddresses[pfpHash] = addr;
         IPrimaryPFP.PFP memory pfp = primaryPFPs[addr];
         if (pfp.contract_ != address(0)) {
+            emit PrimaryRemoved(addr, pfp.contract_, pfp.tokenId);
             delete bindingAddresses[_pfpKey(pfp.contract_, pfp.tokenId)];
         }
         primaryPFPs[addr] = IPrimaryPFP.PFP(contract_, tokenId);

@@ -58,14 +58,6 @@ contract PrimaryPFPTest is Test {
         ppfp.setPrimary(testPFPAddress, _tokenId);
     }
 
-    function _setPrimaryForDelegate(
-        uint256 _tokenId,
-        address _delegate
-    ) internal {
-        vm.prank(msg.sender);
-        ppfp.setPrimaryForDelegate(testPFPAddress, _tokenId, _delegate);
-    }
-
     function testSetNotFromSender() public {
         vm.expectRevert("msg.sender is not the owner");
         ppfp.setPrimary(testPFPAddress, 0);
@@ -195,26 +187,6 @@ contract PrimaryPFPTest is Test {
         assertEq(addr, delegate);
     }
 
-    function testSetDelegate() public {
-        _setPrimaryForDelegate(0, delegate);
-
-        vm.prank(msg.sender);
-        (contract_, tokenId) = ppfp.getPrimary(delegate);
-        assertEq(contract_, testPFPAddress);
-        assertEq(tokenId, 0);
-
-        vm.prank(msg.sender);
-        address addr = ppfp.getPrimaryAddress(contract_, tokenId);
-        assertEq(addr, delegate);
-    }
-
-    function testEventForSetDelegate() public {
-        vm.prank(msg.sender);
-        vm.expectEmit(true, true, true, true);
-        emit PrimaryDelegateSet(msg.sender, delegate, testPFPAddress, 0);
-        ppfp.setPrimaryForDelegate(testPFPAddress, 0, delegate);
-    }
-
     function testSetOverrideByNewPFP() public {
         _setPrimaryPFP(0);
 
@@ -250,21 +222,58 @@ contract PrimaryPFPTest is Test {
         assertEq(tokenId, 0);
 
         vm.prank(msg.sender);
+        testPFP.mint(1);
+
         vm.expectEmit(true, true, true, true);
         emit PrimaryRemoved(msg.sender, testPFPAddress, 0);
 
         vm.expectEmit(true, true, true, true);
-        emit PrimaryDelegateSet(msg.sender, delegate, testPFPAddress, 0);
-        ppfp.setPrimaryForDelegate(testPFPAddress, 0, delegate);
+        emit PrimarySet(msg.sender, testPFPAddress, 1);
+
+        _setPrimaryPFP(1);
 
         vm.prank(msg.sender);
-        (contract_, tokenId) = ppfp.getPrimary(delegate);
+        (contract_, tokenId) = ppfp.getPrimary(msg.sender);
         assertEq(contract_, testPFPAddress);
-        assertEq(tokenId, 0);
+        assertEq(tokenId, 1);
 
         vm.prank(msg.sender);
         address addr = ppfp.getPrimaryAddress(contract_, tokenId);
-        assertEq(addr, delegate);
+        assertEq(addr, msg.sender);
+    }
+
+    function testRemovePrimaryFromTwoAddresses() public {
+        _setPrimaryPFP(0);
+
+        vm.prank(delegate);
+        testPFP.mint(1);
+
+        vm.prank(delegate);
+        ppfp.setPrimary(testPFPAddress, 1);
+
+        vm.prank(delegate);
+        IERC721(testPFPAddress).transferFrom(delegate, msg.sender, 1);
+
+        assertEq(IERC721(testPFPAddress).ownerOf(1), msg.sender);
+        vm.expectEmit(true, true, true, true);
+        emit PrimaryRemoved(msg.sender, testPFPAddress, 0);
+
+        vm.expectEmit(true, true, true, true);
+        emit PrimaryRemoved(delegate, testPFPAddress, 1);
+
+        vm.expectEmit(true, true, true, true);
+        emit PrimarySet(msg.sender, testPFPAddress, 1);
+
+        _setPrimaryPFP(1);
+
+        vm.prank(msg.sender);
+        (contract_, tokenId) = ppfp.getPrimary(msg.sender);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 1);
+
+        vm.prank(msg.sender);
+        address addr = ppfp.getPrimaryAddress(contract_, tokenId);
+        assertEq(addr, msg.sender);
     }
 
     function testSetOverrideByNewOwner() public {
@@ -277,20 +286,19 @@ contract PrimaryPFPTest is Test {
         vm.prank(msg.sender);
         IERC721(testPFPAddress).transferFrom(msg.sender, delegate, 0);
 
-        address newDelegate = makeAddr("newDelegate");
         vm.prank(delegate);
         vm.deal(delegate, 1 ether);
 
-        ppfp.setPrimaryForDelegate(testPFPAddress, 0, newDelegate);
+        ppfp.setPrimary(testPFPAddress, 0);
 
         vm.prank(msg.sender);
-        (contract_, tokenId) = ppfp.getPrimary(newDelegate);
+        (contract_, tokenId) = ppfp.getPrimary(delegate);
         assertEq(contract_, testPFPAddress);
         assertEq(tokenId, 0);
 
         vm.prank(msg.sender);
         address addr = ppfp.getPrimaryAddress(contract_, tokenId);
-        assertEq(addr, newDelegate);
+        assertEq(addr, delegate);
     }
 
     function testSetOverrideBySameAddress() public {
