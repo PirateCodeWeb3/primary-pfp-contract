@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import {IPrimaryPFP} from "./IPrimaryPFP.sol";
+import {ERC165} from "../lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol";
 import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 
 /**
@@ -39,12 +40,23 @@ interface DelegateCashInterface {
     ) external;
 }
 
-contract PrimaryPFP is IPrimaryPFP {
+contract PrimaryPFP is IPrimaryPFP, ERC165 {
     mapping(bytes32 => address) private bindingAddresses;
     mapping(address => IPrimaryPFP.PFP) private primaryPFPs;
     mapping(address => bool) private verifications;
     DelegateCashInterface dci;
     WarmXyzInterface wxi;
+
+    /**
+     * @inheritdoc ERC165
+     */
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC165) returns (bool) {
+        return
+            interfaceId == type(IPrimaryPFP).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
 
     constructor(address dciAddress, address wxiAddress) {
         dci = DelegateCashInterface(dciAddress);
