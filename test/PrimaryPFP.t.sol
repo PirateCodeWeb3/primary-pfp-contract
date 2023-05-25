@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CC0-1.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
@@ -107,7 +107,7 @@ contract PrimaryPFPTest is Test {
     }
 
     function testSetPrimaryPFPByDelegateCashNotDelegated() public {
-        vm.expectRevert("msg.sender is not delegated by delegate.cash");
+        vm.expectRevert("msg.sender is not delegated");
         ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
     }
 
@@ -170,7 +170,7 @@ contract PrimaryPFPTest is Test {
     }
 
     function testSetPrimaryPFPByWarmXyzNotWarmed() public {
-        vm.expectRevert("msg.sender is not warmed by warm.xyz");
+        vm.expectRevert("msg.sender is not warmed");
         ppfp.setPrimaryByWarmXyz(testPFPAddress, 0);
     }
 
