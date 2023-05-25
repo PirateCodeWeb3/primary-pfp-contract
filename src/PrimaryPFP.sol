@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CC0-1.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 
 import {IPrimaryPFP} from "./IPrimaryPFP.sol";
 import {ERC165} from "../lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol";
@@ -51,10 +51,10 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
     // all the PFP collections using
     EnumerableSet.AddressSet private collections;
     // PFP collection => ownerAddress EnumerableSet
-    mapping(address => EnumerableSet.AddressSet) communities;
+    mapping(address => EnumerableSet.AddressSet) private communities;
 
-    DelegateCashInterface dci;
-    WarmXyzInterface wxi;
+    DelegateCashInterface private immutable dci;
+    WarmXyzInterface private immutable wxi;
 
     /**
      * @inheritdoc ERC165
@@ -86,7 +86,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         address tokenOwner = IERC721(contract_).ownerOf(tokenId);
         require(
             wxi.getHotWallet(tokenOwner) == msg.sender,
-            "msg.sender is not warmed by warm.xyz"
+            "msg.sender is not warmed"
         );
         _set(contract_, tokenId);
         emit PrimarySet(msg.sender, contract_, tokenId);
@@ -110,7 +110,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
                     contract_
                 ) ||
                 dci.checkDelegateForAll(msg.sender, tokenOwner),
-            "msg.sender is not delegated by delegate.cash"
+            "msg.sender is not delegated"
         );
         _set(contract_, tokenId);
         emit PrimarySet(msg.sender, contract_, tokenId);
@@ -220,6 +220,6 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         address collection,
         uint256 tokenId
     ) internal pure virtual returns (bytes32) {
-        return keccak256(abi.encode(collection, tokenId));
+        return keccak256(abi.encodePacked(collection, tokenId));
     }
 }

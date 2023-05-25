@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CC0-1.0
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.20;
 
 /**
  * @title Set primary PFP for an address like primary ENS.
