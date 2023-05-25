@@ -25,6 +25,12 @@ interface IPrimaryPFP {
         uint256 tokenId
     );
 
+    // @notice Emitted when a new PFP collection user set primary PFP.
+    event CollectionAdded(address indexed contract_);
+
+    // @notice Emitted when last user from one collection remove primary PFP.
+    event CollectionRemoved(address indexed contract_);
+
     /**
      * @notice Set primary PFP for an address.
      * Only the PFP owner can set it.
@@ -83,4 +89,17 @@ interface IPrimaryPFP {
         address contract_,
         uint256 tokenId
     ) external view returns (address);
+
+    /**
+     * @notice Returns all primary PFP collections addresses set by users.
+     */
+    function getCollections() external view returns (address[] memory);
+
+    /**
+     * @notice Returns all community primary PFP addresses from one community.
+     * @param contract_ The collection address of the PFP
+     */
+    function getCommunities(
+        address contract_
+    ) external view returns (address[] memory);
 }

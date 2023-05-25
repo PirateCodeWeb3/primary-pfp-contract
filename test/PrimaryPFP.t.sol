@@ -29,15 +29,19 @@ contract PrimaryPFPTest is Test {
         uint256 tokenId
     );
 
-    event VerificationAdded(address indexed contract_);
+    // @notice Emitted when a new PFP collection user set primary PFP.
+    event CollectionAdded(address indexed contract_);
 
-    event VerificationRemoved(address indexed contract_);
+    // @notice Emitted when last user from one collection remove primary PFP.
+    event CollectionRemoved(address indexed contract_);
 
     DelegationRegistry dc;
     HotWalletProxy warm;
     PrimaryPFP public ppfp;
     TestPFP public testPFP;
+    TestPFP public testPFP1;
     address public testPFPAddress;
+    address public testPFPAddress1;
     address public delegate;
     address contract_;
     uint256 tokenId;
@@ -47,7 +51,9 @@ contract PrimaryPFPTest is Test {
         warm = new HotWalletProxy();
         ppfp = new PrimaryPFP(address(dc), address(warm));
         testPFP = new TestPFP("Test PFP", "TPFP");
+        testPFP1 = new TestPFP("Test PFP1", "TPFP1");
         testPFPAddress = address(testPFP);
+        testPFPAddress1 = address(testPFP1);
         delegate = makeAddr("delegate");
         vm.prank(msg.sender);
         testPFP.mint(0);
@@ -359,5 +365,65 @@ contract PrimaryPFPTest is Test {
 
         assertEq(IERC721(testPFPAddress).ownerOf(0), delegate);
         assertTrue(addr != delegate);
+    }
+
+    function testGetPrimaryCollections() public {
+        assertTrue(ppfp.getCollections().length == 0);
+
+        vm.expectEmit(true, true, false, true);
+        emit CollectionAdded(testPFPAddress);
+
+        _setPrimaryPFP(0);
+
+        address[] memory primaryPFPs = ppfp.getCollections();
+        assertTrue(primaryPFPs.length == 1);
+        assertEq(primaryPFPs[0], testPFPAddress);
+
+        vm.prank(msg.sender);
+
+        vm.expectEmit(true, true, false, true);
+        emit CollectionRemoved(testPFPAddress);
+
+        ppfp.removePrimary(testPFPAddress, 0);
+
+        assertTrue(ppfp.getCollections().length == 0);
+    }
+
+    function testGetCommuities() public {
+        assertTrue(ppfp.getCommunities(testPFPAddress).length == 0);
+
+        _setPrimaryPFP(0);
+
+        address[] memory communities = ppfp.getCommunities(testPFPAddress);
+        assertTrue(communities.length == 1);
+        assertEq(communities[0], msg.sender);
+
+        vm.prank(msg.sender);
+
+        ppfp.removePrimary(testPFPAddress, 0);
+
+        assertTrue(ppfp.getCommunities(testPFPAddress).length == 0);
+    }
+
+    function testGetCommunitiesFromTwoCollections() public {
+        _setPrimaryPFP(0);
+
+        assertTrue(ppfp.getCommunities(testPFPAddress).length == 1);
+
+        vm.prank(msg.sender);
+        testPFP1.mint(0);
+
+        vm.prank(msg.sender);
+        ppfp.setPrimary(testPFPAddress1, 0);
+        address[] memory testPFPCommunities = ppfp.getCommunities(
+            testPFPAddress
+        );
+        assertTrue(testPFPCommunities.length == 0);
+
+        address[] memory testPFP1Communities = ppfp.getCommunities(
+            testPFPAddress1
+        );
+        assertTrue(testPFP1Communities.length == 1);
+        assertEq(testPFP1Communities[0], msg.sender);
     }
 }

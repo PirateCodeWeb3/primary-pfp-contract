@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import {IPrimaryPFP} from "./IPrimaryPFP.sol";
 import {ERC165} from "../lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol";
 import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import {EnumerableSet} from "../lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol";
 
 /**
  * @title Set primary PFP by binding a PFP to an address like primary ENS.
@@ -41,9 +42,17 @@ interface DelegateCashInterface {
 }
 
 contract PrimaryPFP is IPrimaryPFP, ERC165 {
-    mapping(bytes32 => address) private bindingAddresses;
+    using EnumerableSet for EnumerableSet.AddressSet;
+
+    // keccak256(abi.encode(collection, tokenId)) => ownerAddress
+    mapping(bytes32 => address) private pfpOwners;
+    // ownerAddress => PFPStruct
     mapping(address => IPrimaryPFP.PFP) private primaryPFPs;
-    mapping(address => bool) private verifications;
+    // all the PFP collections using
+    EnumerableSet.AddressSet private collections;
+    // PFP collection => ownerAddress EnumerableSet
+    mapping(address => EnumerableSet.AddressSet) communities;
+
     DelegateCashInterface dci;
     WarmXyzInterface wxi;
 
@@ -66,7 +75,20 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
     function setPrimary(address contract_, uint256 tokenId) external override {
         address tokenOwner = IERC721(contract_).ownerOf(tokenId);
         require(tokenOwner == msg.sender, "msg.sender is not the owner");
-        _set(contract_, tokenId, msg.sender);
+        _set(contract_, tokenId);
+        emit PrimarySet(msg.sender, contract_, tokenId);
+    }
+
+    function setPrimaryByWarmXyz(
+        address contract_,
+        uint256 tokenId
+    ) external override {
+        address tokenOwner = IERC721(contract_).ownerOf(tokenId);
+        require(
+            wxi.getHotWallet(tokenOwner) == msg.sender,
+            "msg.sender is not warmed by warm.xyz"
+        );
+        _set(contract_, tokenId);
         emit PrimarySet(msg.sender, contract_, tokenId);
     }
 
@@ -90,39 +112,38 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
                 dci.checkDelegateForAll(msg.sender, tokenOwner),
             "msg.sender is not delegated by delegate.cash"
         );
-        _set(contract_, tokenId, msg.sender);
+        _set(contract_, tokenId);
         emit PrimarySet(msg.sender, contract_, tokenId);
     }
 
-    function setPrimaryByWarmXyz(
-        address contract_,
-        uint256 tokenId
-    ) external override {
-        address tokenOwner = IERC721(contract_).ownerOf(tokenId);
-        require(
-            wxi.getHotWallet(tokenOwner) == msg.sender,
-            "msg.sender is not warmed by warm.xyz"
-        );
-        _set(contract_, tokenId, msg.sender);
-        emit PrimarySet(msg.sender, contract_, tokenId);
-    }
-
-    function _set(address contract_, uint256 tokenId, address addr) internal {
+    function _set(address contract_, uint256 tokenId) internal {
         bytes32 pfpHash = _pfpKey(contract_, tokenId);
-        address boundAddress = bindingAddresses[pfpHash];
-        require(boundAddress != addr, "duplicated set");
-        bindingAddresses[pfpHash] = addr;
-        IPrimaryPFP.PFP memory pfp = primaryPFPs[addr];
+        address lastOwner = pfpOwners[pfpHash];
+        require(lastOwner != msg.sender, "duplicated set");
+        pfpOwners[pfpHash] = msg.sender;
+        IPrimaryPFP.PFP memory pfp = primaryPFPs[msg.sender];
+        // owner has PFP record
         if (pfp.contract_ != address(0)) {
-            emit PrimaryRemoved(addr, pfp.contract_, pfp.tokenId);
-            delete bindingAddresses[_pfpKey(pfp.contract_, pfp.tokenId)];
+            emit PrimaryRemoved(msg.sender, pfp.contract_, pfp.tokenId);
+            // owner set new PFP collection
+            if (pfp.contract_ != contract_) {
+                communities[pfp.contract_].remove(msg.sender);
+            }
+            delete pfpOwners[_pfpKey(pfp.contract_, pfp.tokenId)];
         }
-        primaryPFPs[addr] = IPrimaryPFP.PFP(contract_, tokenId);
-        if (boundAddress == address(0)) {
+        primaryPFPs[msg.sender] = IPrimaryPFP.PFP(contract_, tokenId);
+        if (collections.add(contract_)) {
+            emit CollectionAdded(contract_);
+        }
+        // owner set new PFP collection
+        if (pfp.contract_ != contract_) {
+            communities[contract_].add(msg.sender);
+        }
+        if (lastOwner == address(0)) {
             return;
         }
-        emit PrimaryRemoved(boundAddress, contract_, tokenId);
-        delete primaryPFPs[boundAddress];
+        emit PrimaryRemoved(lastOwner, contract_, tokenId);
+        delete primaryPFPs[lastOwner];
     }
 
     function removePrimary(
@@ -132,12 +153,17 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         address owner = IERC721(contract_).ownerOf(tokenId);
         require(owner == msg.sender, "msg.sender is not the owner");
         bytes32 pfpHash = _pfpKey(contract_, tokenId);
-        address boundAddress = bindingAddresses[pfpHash];
+        address boundAddress = pfpOwners[pfpHash];
         require(boundAddress != address(0), "primary PFP not set");
 
         emit PrimaryRemoved(boundAddress, contract_, tokenId);
+        communities[contract_].remove(msg.sender);
+        if (communities[contract_].length() == 0) {
+            collections.remove(contract_);
+            emit CollectionRemoved(contract_);
+        }
 
-        delete bindingAddresses[pfpHash];
+        delete pfpOwners[pfpHash];
         delete primaryPFPs[boundAddress];
     }
 
@@ -152,7 +178,42 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         address contract_,
         uint256 tokenId
     ) external view override returns (address) {
-        return bindingAddresses[_pfpKey(contract_, tokenId)];
+        return pfpOwners[_pfpKey(contract_, tokenId)];
+    }
+
+    function getCollections() external view returns (address[] memory) {
+        uint256 length = collections.length();
+        address[] memory result = new address[](length);
+        if (length == 0) {
+            return result;
+        }
+        for (uint256 i; i < length; ) {
+            result[i] = collections.at(i);
+            unchecked {
+                ++i;
+            }
+        }
+        return result;
+    }
+
+    function getCommunities(
+        address contract_
+    ) external view returns (address[] memory) {
+        EnumerableSet.AddressSet storage communityAddresses = communities[
+            contract_
+        ];
+        uint256 length = communityAddresses.length();
+        address[] memory result = new address[](length);
+        if (length == 0) {
+            return result;
+        }
+        for (uint256 i; i < length; ) {
+            result[i] = communityAddresses.at(i);
+            unchecked {
+                ++i;
+            }
+        }
+        return result;
     }
 
     function _pfpKey(
