@@ -79,6 +79,16 @@ interface IPrimaryPFP {
     function getPrimary(address addr) external view returns (address, uint256);
 
     /**
+     * @notice Get primary PFPs for an array of addresses.
+     * Returns a list of PFP struct for addrs.
+     *
+     * @param addrs The addresses for querying primary PFP
+     */
+    function getPrimaries(
+        address[] calldata addrs
+    ) external view returns (PFP[] memory);
+
+    /**
      * @notice Get address of primary PFP for an address.
      * Returns delegated address if this PFP is bind to delegate, returns address(0) if the PFP is not bound to any address.
      *
