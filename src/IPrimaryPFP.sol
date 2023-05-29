@@ -18,6 +18,20 @@ interface IPrimaryPFP {
         uint256 tokenId
     );
 
+    // @notice Emitted when a primary PFP set from delegate.cash.
+    event PrimarySetByDelegateCash(
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
+    );
+
+    // @notice Emitted when a primary PFP set from warm.xyz.
+    event PrimarySetByWarmXyz(
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
+    );
+
     // @notice Emitted when a primary PFP removed.
     event PrimaryRemoved(
         address indexed from,
@@ -77,6 +91,16 @@ interface IPrimaryPFP {
      * @param addr The address for querying primary PFP
      */
     function getPrimary(address addr) external view returns (address, uint256);
+
+    /**
+     * @notice Get primary PFPs for an array of addresses.
+     * Returns a list of PFP struct for addrs.
+     *
+     * @param addrs The addresses for querying primary PFP
+     */
+    function getPrimaries(
+        address[] calldata addrs
+    ) external view returns (PFP[] memory);
 
     /**
      * @notice Get address of primary PFP for an address.

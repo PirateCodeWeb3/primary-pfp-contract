@@ -47,7 +47,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
     // keccak256(abi.encode(collection, tokenId)) => ownerAddress
     mapping(bytes32 => address) private pfpOwners;
     // ownerAddress => PFPStruct
-    mapping(address => IPrimaryPFP.PFP) private primaryPFPs;
+    mapping(address => PFP) private primaryPFPs;
     // all the PFP collections using
     EnumerableSet.AddressSet private collections;
     // PFP collection => ownerAddress EnumerableSet
@@ -89,7 +89,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             "msg.sender is not warmed"
         );
         _set(contract_, tokenId);
-        emit PrimarySet(msg.sender, contract_, tokenId);
+        emit PrimarySetByWarmXyz(msg.sender, contract_, tokenId);
     }
 
     function setPrimaryByDelegateCash(
@@ -113,7 +113,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             "msg.sender is not delegated"
         );
         _set(contract_, tokenId);
-        emit PrimarySet(msg.sender, contract_, tokenId);
+        emit PrimarySetByDelegateCash(msg.sender, contract_, tokenId);
     }
 
     function _set(address contract_, uint256 tokenId) internal {
@@ -121,7 +121,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         address lastOwner = pfpOwners[pfpHash];
         require(lastOwner != msg.sender, "duplicated set");
         pfpOwners[pfpHash] = msg.sender;
-        IPrimaryPFP.PFP memory pfp = primaryPFPs[msg.sender];
+        PFP memory pfp = primaryPFPs[msg.sender];
         // owner has PFP record
         if (pfp.contract_ != address(0)) {
             emit PrimaryRemoved(msg.sender, pfp.contract_, pfp.tokenId);
@@ -131,7 +131,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             }
             delete pfpOwners[_pfpKey(pfp.contract_, pfp.tokenId)];
         }
-        primaryPFPs[msg.sender] = IPrimaryPFP.PFP(contract_, tokenId);
+        primaryPFPs[msg.sender] = PFP(contract_, tokenId);
         if (collections.add(contract_)) {
             emit CollectionAdded(contract_);
         }
@@ -170,8 +170,22 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
     function getPrimary(
         address addr
     ) external view override returns (address, uint256) {
-        IPrimaryPFP.PFP memory pfp = primaryPFPs[addr];
+        PFP memory pfp = primaryPFPs[addr];
         return (pfp.contract_, pfp.tokenId);
+    }
+
+    function getPrimaries(
+        address[] calldata addrs
+    ) external view returns (PFP[] memory) {
+        uint256 length = addrs.length;
+        PFP[] memory result = new PFP[](length);
+        for (uint256 i; i < length; ) {
+            result[i] = primaryPFPs[addrs[i]];
+            unchecked {
+                ++i;
+            }
+        }
+        return result;
     }
 
     function getPrimaryAddress(
@@ -184,9 +198,6 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
     function getCollections() external view returns (address[] memory) {
         uint256 length = collections.length();
         address[] memory result = new address[](length);
-        if (length == 0) {
-            return result;
-        }
         for (uint256 i; i < length; ) {
             result[i] = collections.at(i);
             unchecked {
@@ -204,9 +215,6 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         ];
         uint256 length = communityAddresses.length();
         address[] memory result = new address[](length);
-        if (length == 0) {
-            return result;
-        }
         for (uint256 i; i < length; ) {
             result[i] = communityAddresses.at(i);
             unchecked {

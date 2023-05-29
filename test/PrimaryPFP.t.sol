@@ -5,6 +5,7 @@ import "forge-std/console.sol";
 import "forge-std/Test.sol";
 import "ds-test/test.sol";
 import "../src/PrimaryPFP.sol";
+import "../src/IPrimaryPFP.sol";
 import "../src/TestPFP.sol";
 import "../lib/delegate-cash/DelegationRegistry.sol";
 import "../lib/warm-xyz/HotWalletProxy.sol";
@@ -16,8 +17,13 @@ contract PrimaryPFPTest is Test {
         uint256 tokenId
     );
 
-    event PrimaryDelegateSet(
-        address indexed from,
+    event PrimarySetByDelegateCash(
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
+    );
+
+    event PrimarySetByWarmXyz(
         address indexed to,
         address indexed contract_,
         uint256 tokenId
@@ -75,10 +81,42 @@ contract PrimaryPFPTest is Test {
         _setPrimaryPFP(0);
     }
 
-    function testGetPrimaryWrong() public {
+    function testGetPrimaryEmpty() public {
         (contract_, tokenId) = ppfp.getPrimary(msg.sender);
         assertEq(contract_, address(0));
         assertEq(tokenId, 0);
+    }
+
+    function testGetPrimary() public {
+        _setPrimaryPFP(0);
+        (contract_, tokenId) = ppfp.getPrimary(msg.sender);
+        assertEq(contract_, testPFPAddress);
+        assertEq(tokenId, 0);
+    }
+
+    function testGetPrimaries() public {
+        _setPrimaryPFP(0);
+
+        vm.prank(delegate);
+        testPFP1.mint(1);
+
+        vm.prank(delegate);
+        ppfp.setPrimary(testPFPAddress1, 1);
+
+        address[] memory addrs = new address[](3);
+        addrs[0] = msg.sender;
+        addrs[1] = address(0);
+        addrs[2] = delegate;
+        IPrimaryPFP.PFP[] memory result = ppfp.getPrimaries(addrs);
+
+        assertEq(result[0].contract_, testPFPAddress);
+        assertEq(result[0].tokenId, 0);
+
+        assertEq(result[1].contract_, address(0));
+        assertEq(result[1].tokenId, 0);
+
+        assertEq(result[2].contract_, testPFPAddress1);
+        assertEq(result[2].tokenId, 1);
     }
 
     function testGetPrimarySetAddressNotSet() public {
@@ -120,6 +158,7 @@ contract PrimaryPFPTest is Test {
         );
 
         vm.prank(delegate);
+        emit PrimarySetByDelegateCash(msg.sender, testPFPAddress, 0);
         ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
 
         (contract_, tokenId) = ppfp.getPrimary(delegate);
@@ -181,6 +220,7 @@ contract PrimaryPFPTest is Test {
         assertEq(warm.getHotWallet(msg.sender), delegate);
 
         vm.prank(delegate);
+        emit PrimarySetByWarmXyz(msg.sender, testPFPAddress, 0);
         ppfp.setPrimaryByWarmXyz(testPFPAddress, 0);
 
         vm.prank(msg.sender);
