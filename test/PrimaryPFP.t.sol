@@ -17,8 +17,13 @@ contract PrimaryPFPTest is Test {
         uint256 tokenId
     );
 
-    event PrimaryDelegateSet(
-        address indexed from,
+    event PrimarySetByDelegateCash(
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
+    );
+
+    event PrimarySetByWarmXyz(
         address indexed to,
         address indexed contract_,
         uint256 tokenId
@@ -153,6 +158,7 @@ contract PrimaryPFPTest is Test {
         );
 
         vm.prank(delegate);
+        emit PrimarySetByDelegateCash(msg.sender, testPFPAddress, 0);
         ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
 
         (contract_, tokenId) = ppfp.getPrimary(delegate);
@@ -214,6 +220,7 @@ contract PrimaryPFPTest is Test {
         assertEq(warm.getHotWallet(msg.sender), delegate);
 
         vm.prank(delegate);
+        emit PrimarySetByWarmXyz(msg.sender, testPFPAddress, 0);
         ppfp.setPrimaryByWarmXyz(testPFPAddress, 0);
 
         vm.prank(msg.sender);

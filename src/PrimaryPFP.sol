@@ -89,7 +89,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             "msg.sender is not warmed"
         );
         _set(contract_, tokenId);
-        emit PrimarySet(msg.sender, contract_, tokenId);
+        emit PrimarySetByWarmXyz(msg.sender, contract_, tokenId);
     }
 
     function setPrimaryByDelegateCash(
@@ -113,7 +113,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             "msg.sender is not delegated"
         );
         _set(contract_, tokenId);
-        emit PrimarySet(msg.sender, contract_, tokenId);
+        emit PrimarySetByDelegateCash(msg.sender, contract_, tokenId);
     }
 
     function _set(address contract_, uint256 tokenId) internal {

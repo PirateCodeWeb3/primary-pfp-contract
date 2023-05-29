@@ -18,6 +18,20 @@ interface IPrimaryPFP {
         uint256 tokenId
     );
 
+    // @notice Emitted when a primary PFP set from delegate.cash.
+    event PrimarySetByDelegateCash(
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
+    );
+
+    // @notice Emitted when a primary PFP set from warm.xyz.
+    event PrimarySetByWarmXyz(
+        address indexed to,
+        address indexed contract_,
+        uint256 tokenId
+    );
+
     // @notice Emitted when a primary PFP removed.
     event PrimaryRemoved(
         address indexed from,
