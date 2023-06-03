@@ -39,8 +39,8 @@ forge create --rpc-url {rpc_url} \
 ## Mainnet Contract Address
 | Name | address |
 | --- | --- |
-| delegate.cash | [0x00000000000076A84feF008CDAbe6409d2FE638B](https://goerli.etherscan.io/address/0x00000000000076A84feF008CDAbe6409d2FE638B) |
-| warm.xyz | [0xC3AA9bc72Bd623168860a1e5c6a4530d3D80456c](https://goerli.etherscan.io/address/0xC3AA9bc72Bd623168860a1e5c6a4530d3D80456c) |
+| delegate.cash | [0x00000000000076A84feF008CDAbe6409d2FE638B](https://etherscan.io/address/0x00000000000076A84feF008CDAbe6409d2FE638B) |
+| warm.xyz | [0xC3AA9bc72Bd623168860a1e5c6a4530d3D80456c](https://etherscan.io/address/0xC3AA9bc72Bd623168860a1e5c6a4530d3D80456c) |
 
 # Thanks for the innovators
 This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/ForeverpunksCom) and [delegate.cash](https://delegate.cash).
