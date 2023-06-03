@@ -54,7 +54,6 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
     mapping(address => EnumerableSet.AddressSet) private communities;
 
     DelegateCashInterface private immutable dci;
-    WarmXyzInterface private immutable wxi;
 
     /**
      * @inheritdoc ERC165
@@ -67,9 +66,8 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             super.supportsInterface(interfaceId);
     }
 
-    constructor(address dciAddress, address wxiAddress) {
+    constructor(address dciAddress) {
         dci = DelegateCashInterface(dciAddress);
-        wxi = WarmXyzInterface(wxiAddress);
     }
 
     function setPrimary(address contract_, uint256 tokenId) external override {
@@ -77,19 +75,6 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
         require(tokenOwner == msg.sender, "msg.sender is not the owner");
         _set(contract_, tokenId);
         emit PrimarySet(msg.sender, contract_, tokenId);
-    }
-
-    function setPrimaryByWarmXyz(
-        address contract_,
-        uint256 tokenId
-    ) external override {
-        address tokenOwner = IERC721(contract_).ownerOf(tokenId);
-        require(
-            wxi.getHotWallet(tokenOwner) == msg.sender,
-            "msg.sender is not warmed"
-        );
-        _set(contract_, tokenId);
-        emit PrimarySetByWarmXyz(msg.sender, contract_, tokenId);
     }
 
     function setPrimaryByDelegateCash(

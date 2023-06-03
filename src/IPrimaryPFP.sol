@@ -25,13 +25,6 @@ interface IPrimaryPFP {
         uint256 tokenId
     );
 
-    // @notice Emitted when a primary PFP set from warm.xyz.
-    event PrimarySetByWarmXyz(
-        address indexed to,
-        address indexed contract_,
-        uint256 tokenId
-    );
-
     // @notice Emitted when a primary PFP removed.
     event PrimaryRemoved(
         address indexed from,
@@ -65,15 +58,6 @@ interface IPrimaryPFP {
         address contract_,
         uint256 tokenId
     ) external;
-
-    /**
-     * @notice Set primary PFP for an address from a warmed address from warm.xyz.
-     * Only the warmed address from warm.xyz can set it.
-     *
-     * @param contract_ The collection address of the PFP
-     * @param tokenId The tokenId of the PFP
-     */
-    function setPrimaryByWarmXyz(address contract_, uint256 tokenId) external;
 
     /**
      * @notice Remove the primary PFP setting.
