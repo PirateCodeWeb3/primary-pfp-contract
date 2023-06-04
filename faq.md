@@ -2,7 +2,7 @@
 
 PFP holder can have more than one PFPs in one address, but for the social networking better knowing your "face", it would be better choose a primary PFP and set it onchain.
 
-We have getName(address) function provided by ENS now, we will have getPFP(address) function by PrimaryPFP, with this you can easy to get your Ethereum ID(ENS name and PFP image) anywhere with ethereum address signed to login.
+Together with primary ENS, primary PFP help complete the ethereum ID.
 
 ## Why not ENS avatar?
 
@@ -12,13 +12,14 @@ We can [set avatar in ENS](https://medium.com/@brantly.eth/step-by-step-guide-to
 
 No.
 
-## Can I set my primary PFP to another address?
+## I have used delegate.cash to seperate my cold & hot wallet, are they supported by primary PFP?
 
-Yes, you can set your PFP to any address anytime by your token owner address.
+Yes, the primary PFP support delegate.cash to use hotwallet to set primary PFP to take 0 risk of PFP in vault.
 
-## I have used delegate.cash/warm.xyz to seperate my cold & hot wallet, are they supported by primary PFP?
+## Why warm.xyz not be supported?
 
-Yes, the primary PFP support delegate.cash and warm.xyz to use hotwallet to set primary PFP to take 0 risk of PFP in vault.
+Primary PFP will be a lego as web3 world, it's non-upgradable like delegate.cash, so people can rely on the contract onchain instead
+of trust the contract owner will not upgrade the code to do some bad thing, warm.xyz contract is upgradable, so it is not supported.
 
 ## What if I sold my primary PFP?
 
@@ -26,6 +27,6 @@ The primary PFP data is still in the contract if the new owner don't override it
 
 ## Any auditing on primary PFP?
 
-The primary PFP contract neither save PFPs nor asking approvals for PFPs, so it's not audited.
+The primary PFP contract neither hold PFP assets nor asking approvals for PFP contract, so it's not audited like delegate.cash.
 
-Use delegate.cash or warm.xyz to seperate your hotwallet and cold wallet to take 0 risk for your PFP to set primary PFP.
+Use delegate.cash to seperate your hotwallet and cold wallet to take 0 risk for your PFP to set primary PFP.
