@@ -32,7 +32,7 @@ forge create --rpc-url {rpc_url} \
 
 | Name | address |
 | --- | --- |
-| PrimaryPFP | [0x17D1725f480cfC8386b8C7B2D104C9fE98737459](https://goerli.etherscan.io/address/0x17D1725f480cfC8386b8C7B2D104C9fE98737459) |
+| PrimaryPFP | [0x7789cc594EaC7154f5f9D671764a6746A47D9a55](https://goerli.etherscan.io/address/0x7789cc594EaC7154f5f9D671764a6746A47D9a55) |
 | delegate.cash | [0x00000000000076A84feF008CDAbe6409d2FE638B](https://goerli.etherscan.io/address/0x00000000000076A84feF008CDAbe6409d2FE638B) |
 
 ## Mainnet Contract Address
