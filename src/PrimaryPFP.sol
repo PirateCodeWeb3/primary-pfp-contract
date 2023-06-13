@@ -9,9 +9,6 @@ import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC
  * @title Set primary PFP by binding a PFP to an address like primary ENS.
  *
  */
-interface WarmXyzInterface {
-    function getHotWallet(address coldWallet) external view returns (address);
-}
 
 interface DelegateCashInterface {
     function checkDelegateForAll(
@@ -32,12 +29,6 @@ interface DelegateCashInterface {
         uint256 tokenId
     ) external view returns (bool);
 
-    function delegateForToken(
-        address delegate,
-        address contract_,
-        uint256 tokenId,
-        bool value
-    ) external;
 }
 
 contract PrimaryPFP is IPrimaryPFP, ERC165 {
