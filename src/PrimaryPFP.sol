@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IPrimaryPFP} from "./IPrimaryPFP.sol";
+import {Initializable} from "../lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol";
 import {ERC165} from "../lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol";
 import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 
@@ -28,16 +29,15 @@ interface DelegateCashInterface {
         address contract_,
         uint256 tokenId
     ) external view returns (bool);
-
 }
 
-contract PrimaryPFP is IPrimaryPFP, ERC165 {
+contract PrimaryPFP is IPrimaryPFP, ERC165, Initializable {
     // keccak256(abi.encode(collection, tokenId)) => ownerAddress
     mapping(bytes32 => address) private pfpOwners;
     // ownerAddress => PFPStruct
     mapping(address => PFP) private primaryPFPs;
 
-    DelegateCashInterface private immutable dci;
+    DelegateCashInterface private dci;
 
     /**
      * @inheritdoc ERC165
@@ -50,7 +50,7 @@ contract PrimaryPFP is IPrimaryPFP, ERC165 {
             super.supportsInterface(interfaceId);
     }
 
-    constructor(address dciAddress) {
+    function initialize(address dciAddress) public initializer {
         dci = DelegateCashInterface(dciAddress);
     }
 
