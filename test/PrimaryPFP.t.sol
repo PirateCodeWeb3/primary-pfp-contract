@@ -46,7 +46,8 @@ contract PrimaryPFPTest is Test {
 
     function setUp() public {
         dc = new DelegationRegistry();
-        ppfp = new PrimaryPFP(address(dc));
+        ppfp = new PrimaryPFP();
+        ppfp.initialize(address(dc));
         testPFP = new TestPFP("Test PFP", "TPFP");
         testPFP1 = new TestPFP("Test PFP1", "TPFP1");
         testPFPAddress = address(testPFP);
@@ -372,4 +373,5 @@ contract PrimaryPFPTest is Test {
         assertEq(IERC721(testPFPAddress).ownerOf(0), delegate);
         assertTrue(addr != delegate);
     }
+
 }
