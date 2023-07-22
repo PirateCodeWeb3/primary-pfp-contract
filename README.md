@@ -44,7 +44,7 @@ https://goerli.etherscan.io/tx/0xa224c8b5b41430ffd059ca0d30532960f5ead3082691b2c
 ## Mainnet Contract Address
 | Name | address |
 | --- | --- |
-| PrimaryPFP | [0x00000000009706556bfd041ed3ea54aa406a7e60](https://goerli.etherscan.io/address/0x00000000009706556bfd041ed3ea54aa406a7e60) |
+| PrimaryPFP | [0x00000000009706556bfd041ed3ea54aa406a7e60](https://etherscan.io/address/0x00000000009706556bfd041ed3ea54aa406a7e60) |
 | delegate.cash | [0x00000000000076A84feF008CDAbe6409d2FE638B](https://etherscan.io/address/0x00000000000076A84feF008CDAbe6409d2FE638B) |
 
 
