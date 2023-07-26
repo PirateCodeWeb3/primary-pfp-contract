@@ -40,11 +40,11 @@ forge script --broadcast -vvvv --rpc-url {rpc_url} \
 
 |Mainnet Chain|Address|
 |---|---|
-|Ethereum|[0x00000000009706556bfd041ed3ea54aa406a7e60](https://etherscan.io/address/0x00000000009706556bfd041ed3ea54aa406a7e60)|
+|Ethereum|[0x000000000374800E799771196BF826cb7e7511a2](https://etherscan.io/address/0x000000000374800E799771196BF826cb7e7511a2)|
 
 |Testnet Chain|Address|
 |---|---|
-|Ethereum (Goerli)|[0x00000000009706556bfd041ed3ea54aa406a7e60](https://goerli.etherscan.io/address/0x00000000009706556bfd041ed3ea54aa406a7e60)|
+|Ethereum (Goerli)|[0x000000000374800E799771196BF826cb7e7511a2](https://goerli.etherscan.io/address/0x000000000374800E799771196BF826cb7e7511a2)|
 
 If you'd like to get the Primary on another EVM chain, anyone in the community can deploy to the same address and make a PR to add link here.
 
