@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CC0-1.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.21;
 
 import {IPrimaryPFP} from "./IPrimaryPFP.sol";
 import {Initializable} from "../lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol";
@@ -13,21 +13,24 @@ import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC
 
 interface DelegateCashInterface {
     function checkDelegateForAll(
-        address delegate,
-        address vault
+        address to,
+        address from,
+        bytes32 rights
     ) external view returns (bool);
 
     function checkDelegateForContract(
-        address delegate,
-        address vault,
-        address contract_
+        address to,
+        address from,
+        address contract_,
+        bytes32 rights
     ) external view returns (bool);
 
-    function checkDelegateForToken(
-        address delegate,
-        address vault,
+    function checkDelegateForERC721(
+        address to,
+        address from,
         address contract_,
-        uint256 tokenId
+        uint256 tokenId,
+        bytes32 rights
     ) external view returns (bool);
 }
 
@@ -67,18 +70,20 @@ contract PrimaryPFP is IPrimaryPFP, ERC165, Initializable {
     ) external override {
         address tokenOwner = IERC721(contract_).ownerOf(tokenId);
         require(
-            dci.checkDelegateForToken(
+            dci.checkDelegateForERC721(
                 msg.sender,
                 tokenOwner,
                 contract_,
-                tokenId
+                tokenId,
+                ""
             ) ||
                 dci.checkDelegateForContract(
                     msg.sender,
                     tokenOwner,
-                    contract_
+                    contract_,
+                    ""
                 ) ||
-                dci.checkDelegateForAll(msg.sender, tokenOwner),
+                dci.checkDelegateForAll(msg.sender, tokenOwner, ""),
             "msg.sender is not delegated"
         );
         _set(contract_, tokenId);

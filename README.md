@@ -32,7 +32,7 @@ forge script --broadcast -vvvv --rpc-url {rpc_url} \
 ```
 - initialize with delegate cash address
 ```
-0x00000000000076A84feF008CDAbe6409d2FE638B
+0x00000000000000447e69651d841bd8d104bed493
 ```
 
 
@@ -40,13 +40,13 @@ forge script --broadcast -vvvv --rpc-url {rpc_url} \
 
 |Mainnet Chain|Address|
 |---|---|
-|Ethereum|[0x000000000374800E799771196BF826cb7e7511a2](https://etherscan.io/address/0x000000000374800E799771196BF826cb7e7511a2)|
+|Ethereum|[0x000000000616bf76274afd7925661e5efb3ca29f](https://etherscan.io/address/0x000000000616bf76274afd7925661e5efb3ca29f)|
 
 |Testnet Chain|Address|
 |---|---|
-|Ethereum (Goerli)|[0x000000000374800E799771196BF826cb7e7511a2](https://goerli.etherscan.io/address/0x000000000374800E799771196BF826cb7e7511a2)|
+|Ethereum (Goerli)|[0x000000000616bf76274afd7925661e5efb3ca29f](https://goerli.etherscan.io/address/0x000000000616bf76274afd7925661e5efb3ca29f)|
 
 If you'd like to get the Primary on another EVM chain, anyone in the community can deploy to the same address and make a PR to add link here.
 
 # Thanks for the innovators
-This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/ForeverpunksCom) and [delegate.cash](https://delegate.cash).
+This project is inspired by [Primary ENS Name](https://app.ens.domains/faq#what-is-a-primary-ens-name-record), [ForeverPunk](https://twitter.com/ForeverpunksCom) and [delegate.xyz](https://delegate.xyz).

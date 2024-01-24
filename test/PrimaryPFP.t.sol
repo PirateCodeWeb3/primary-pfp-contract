@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CC0-1.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.21;
 
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
@@ -7,7 +7,7 @@ import "ds-test/test.sol";
 import "../src/PrimaryPFP.sol";
 import "../src/IPrimaryPFP.sol";
 import "../src/TestPFP.sol";
-import "../lib/delegate-cash/DelegationRegistry.sol";
+import "../lib/delegate/DelegateRegistry.sol";
 
 contract PrimaryPFPTest is Test {
     event PrimarySet(
@@ -34,7 +34,7 @@ contract PrimaryPFPTest is Test {
     // @notice Emitted when last user from one collection remove primary PFP.
     event CollectionRemoved(address indexed contract_);
 
-    DelegationRegistry dc;
+    DelegateRegistry dc;
     PrimaryPFP public ppfp;
     TestPFP public testPFP;
     TestPFP public testPFP1;
@@ -45,7 +45,7 @@ contract PrimaryPFPTest is Test {
     uint256 tokenId;
 
     function setUp() public {
-        dc = new DelegationRegistry();
+        dc = new DelegateRegistry();
         ppfp = new PrimaryPFP();
         ppfp.initialize(address(dc));
         testPFP = new TestPFP("Test PFP", "TPFP");
@@ -144,9 +144,15 @@ contract PrimaryPFPTest is Test {
     function testSetPrimaryPFPByDelegateCashToken() public {
         vm.prank(msg.sender);
 
-        dc.delegateForToken(delegate, testPFPAddress, 0, true);
+        dc.delegateERC721(delegate, testPFPAddress, 0, "", true);
         assertTrue(
-            dc.checkDelegateForToken(delegate, msg.sender, testPFPAddress, 0)
+            dc.checkDelegateForERC721(
+                delegate,
+                msg.sender,
+                testPFPAddress,
+                0,
+                ""
+            )
         );
 
         vm.prank(delegate);
@@ -165,9 +171,14 @@ contract PrimaryPFPTest is Test {
     function testSetPrimaryPFPByDelegateCashContract() public {
         vm.prank(msg.sender);
 
-        dc.delegateForContract(delegate, testPFPAddress, true);
+        dc.delegateContract(delegate, testPFPAddress, "", true);
         assertTrue(
-            dc.checkDelegateForContract(delegate, msg.sender, testPFPAddress)
+            dc.checkDelegateForContract(
+                delegate,
+                msg.sender,
+                testPFPAddress,
+                ""
+            )
         );
 
         vm.prank(delegate);
@@ -185,8 +196,8 @@ contract PrimaryPFPTest is Test {
     function testSetPrimaryPFPByDelegateCashAll() public {
         vm.prank(msg.sender);
 
-        dc.delegateForAll(delegate, true);
-        assertTrue(dc.checkDelegateForAll(delegate, msg.sender));
+        dc.delegateAll(delegate, "", true);
+        assertTrue(dc.checkDelegateForAll(delegate, msg.sender, ""));
 
         vm.prank(delegate);
         ppfp.setPrimaryByDelegateCash(testPFPAddress, 0);
@@ -373,5 +384,4 @@ contract PrimaryPFPTest is Test {
         assertEq(IERC721(testPFPAddress).ownerOf(0), delegate);
         assertTrue(addr != delegate);
     }
-
 }
